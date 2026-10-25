@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alliance Store | المتجر الرسمي</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #e11d48;
+            --accent-hover: #be123c;
+            --green: #10b981;
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            direction: rtl;
+        }
+
+        /* شريط التنبيهات العلوي */
+        .top-bar {
+            background: #111827;
+            color: #fff;
+            text-align: center;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* الهيدر */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+        .logo span {
+            color: var(--accent);
+        }
+
+        /* البانر الإعلاني */
+        .hero-banner {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: white;
+            text-align: center;
+            padding: 35px 20px;
+            border-bottom: 3px solid var(--accent);
+        }
+        .hero-banner h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .hero-banner p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        /* حاوية المتجر الرئيسية */
+        .main-container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 16px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+        }
+
+        /* شبكة المنتجات */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+        .product-card:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .badge-discount {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 20px;
+            z-index: 2;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            background: #f1f5f9;
+        }
+
+        .product-info {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .product-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .price-box {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .current-price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .old-price {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .btn-order {
+            margin-top: auto;
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-order:hover {
+            background: var(--accent);
+        }
+
+        /* نافذة الطلب المودال (Checkout Modal) */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            padding: 16px;
+        }
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .order-summary-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .order-summary-box img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+        .form-control {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .form-control:focus {
+            border-color: var(--accent);
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .qty-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .radio-options {
+            display: flex;
+            gap: 10px;
+        }
+        .radio-box {
+            flex: 1;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .radio-box.selected {
+            border-color: var(--accent);
+            background: #fff1f2;
+            color: var(--accent);
+        }
+
+        .price-breakdown {
+            margin: 18px 0;
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        .price-breakdown div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .price-breakdown .total-row {
+            font-weight: 800;
+            font-size: 1.1rem;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 6px;
+            color: var(--accent);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--green);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+        .btn-submit:hover {
+            background: #059669;
+        }
+
+        /* رسالة التأكيد بعد الطلب */
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .success-box i {
+            font-size: 3.5rem;
+            color: var(--green);
+            margin-bottom: 12px;
+        }
+
+        footer {
+            background: #fff;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- التنبيه العلوي -->
+    <div class="top-bar">
+        ⚡ التوصيل متوفر لجميع الولايات والدفع عند الاستلام بعد المعاينة ⚡
+    </div>
+
+    <!-- الهيدر الرئيسي -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">ALLIANCE<span>.</span></div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: var(--green);">
+                <i class="fa-solid fa-truck-fast"></i> الدفع عند الاستلام
+            </div>
+        </div>
+    </header>
+
+    <!-- البانر -->
+    <div class="hero-banner">
+        <h1>متجر ALLIANCE</h1>
+        <p>الجودة والأناقة بأفضل الأسعار مباشرة إليك</p>
+    </div>
+
+    <!-- المحتوى والمنتجات -->
+    <div class="main-container">
+        <h2 class="section-title"><i class="fa-solid fa-spray-can-sparkles"></i> تشكيلة المنتجات الأكثر طلباً</h2>
+        
+        <div class="products-grid" id="productsGrid">
+            <!-- المنتجات يتم توليدها ديناميكياً بواسطة JavaScript -->
+        </div>
+    </div>
+
+    <!-- نافذة الطلب المباشر (Modal) -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+
+            <div id="checkoutFormContent">
+                <h3 style="font-weight: 800; margin-bottom: 15px; font-size: 1.15rem;">إتمام الطلب السريع</h3>
+                
+                <div class="order-summary-box">
+                    <img id="modalImg" src="" alt="Product">
+                    <div>
+                        <div id="modalTitle" style="font-weight: 700; font-size: 0.9rem;"></div>
+                        <div id="modalPrice" style="color: var(--accent); font-weight: 800;"></div>
+                    </div>
+                </div>
+
+                <form id="orderForm" onsubmit="submitOrder(event)">
+                    <!-- الكمية -->
+                    <div class="form-group">
+                        <label>الكمية المطلوبة:</label>
+                        <div class="qty-control">
+                            <button type="button" class="qty-btn" onclick="updateQty(-1)">-</button>
+                            <span id="qtyVal" style="font-weight: 700; min-width: 25px; text-align: center;">1</span>
+                            <button type="button" class="qty-btn" onclick="updateQty(1)">+</button>
+                        </div>
+                    </div>
+
+                    <!-- الاسم الكامل -->
+                    <div class="form-group">
+                        <label>الاسم واللقب *</label>
+                        <input type="text" id="custName" class="form-control" placeholder="أدخل اسمك الكامل" required>
+                    </div>
+
+                    <!-- رقم الهاتف -->
+                    <div class="form-group">
+                        <label>رقم الهاتف *</label>
+                        <input type="tel" id="custPhone" class="form-control" placeholder="05 / 06 / 07 XX XX XX" required pattern="[0-9]{10}">
+                    </div>
+
+                    <!-- الولاية -->
+                    <div class="form-group">
+                        <label>الولاية *</label>
+                        <select id="custWilaya" class="form-control" required onchange="calculateDelivery()">
+                            <option value="">-- اختر ولايتك --</option>
+                        </select>
+                    </div>
+
+                    <!-- البلدية والعنوان -->
+                    <div class="form-group">
+                        <label>البلدية أو العنوان *</label>
+                        <input type="text" id="custAddress" class="form-control" placeholder="البلدية واسم الحي" required>
+                    </div>
+
+                    <!-- نوع التوصيل -->
+                    <div class="form-group">
+                        <label>طريقة التوصيل:</label>
+                        <div class="radio-options">
+                            <div class="radio-box selected" id="optHome" onclick="setDeliveryType('home')">
+                                <i class="fa-solid fa-house"></i> للمنزل
+                            </div>
+                            <div class="radio-box" id="optDesk" onclick="setDeliveryType('desk')">
+                                <i class="fa-solid fa-building"></i> لمكتب التوصيل (Stop Desk)
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- تفاصيل السعر والمجموع -->
+                    <div class="price-breakdown">
+                        <div>
+                            <span>سعر المنتجات:</span>
+                            <span id="subtotalPrice">0 دج</span>
+                        </div>
+                        <div>
+                            <span>سعر التوصيل:</span>
+                            <span id="deliveryCost">0 دج</span>
+                        </div>
+                        <div class="total-row">
+                            <span>المجموع الكلي:</span>
+                            <span id="totalPrice">0 دج</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <i class="fa-solid fa-check-circle"></i> تأكيد الطلب الآن (الدفع عند الاستلام)
+                    </button>
+                </form>
+            </div>
+
+            <!-- رسالة النجاح بعد التأكيد -->
+            <div id="successContent" class="success-box">
+                <i class="fa-regular fa-circle-check"></i>
+                <h3 style="font-weight: 800; margin-bottom: 8px;">تم استلام طلبك بنجاح!</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 18px;">
+                    شكراً لثقتكم بمتجر <strong>ALLIANCE</strong>. سنتصل بك قريباً على رقمك لتأكيد الطلب وبدء الإرسال.
+                </p>
+                <button type="button" class="btn-order" onclick="closeModal()">العودة للمتجر</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الفوتر -->
+    <footer>
+        <p>© 2026 جميع الحقوق محفوظة لمتجر <strong>ALLIANCE</strong> - الجزائر</p>
+    </footer>
+
+    <!-- سكربت العمليات والحسابات -->
+    <script>
+        // قائمة الولايات كاملة (69 ولاية)
+        const wilayas = [
+            "01 - أدرار", "02 - الشلف", "03 - الأغواط", "04 - أم البواقي", "05 - باتنة",
+            "06 - بجاية", "07 - بسكرة", "08 - بشار", "09 - البليدة", "10 - البويرة",
+            "11 - تمنراست", "12 - تبسة", "13 - تلمسان", "14 - تيارت", "15 - تيزي وزو",
+            "16 - الجزائر", "17 - الجلفة", "18 - جيجل", "19 - سطيف", "20 - سعيدة",
+            "21 - سكيكدة", "22 - سيدي بلعباس", "23 - عنابة", "24 - قالمة", "25 - قسنطينة",
+            "26 - المدية", "27 - مستغانم", "28 - المسيلة", "29 - معسكر", "30 - ورقلة",
+            "31 - وهران", "32 - البيض", "33 - إليزي", "34 - برج بوعريريج", "35 - بومرداس",
+            "36 - الطارف", "37 - تندوف", "38 - تسمسيلت", "39 - الوادي", "40 - خنشلة",
+            "41 - سوق أهراس", "42 - تيبازة", "43 - ميلة", "44 - عين الدفلى", "45 - النعامة",
+            "46 - عين تموشنت", "47 - غرداية", "48 - غليزان", "49 - تيميمون", "50 - برج باجي مختار",
+            "51 - أولاد جلال", "52 - بني عباس", "53 - عين صالح", "54 - عين قزام", "55 - تقرت",
+            "56 - جانت", "57 - المغير", "58 - المنيعة", "59 - آفلو", "60 - بريكة",
+            "61 - قصر الشلالة", "62 - عين وسارة", "63 - مسعد", "64 - بوسعادة", "65 - الأبيض سيدي الشيخ",
+            "66 - شلغوم العيد", "67 - بئر العاتر", "68 - خميس مليانة", "69 - المشرية"
+        ];
+
+        // قائمة المنتجات المعروضة
+        const products = [
+            {
+                id: 1,
+                title: "case iphone black",
+                price: 1600,
+                oldPrice: 2500,
+                discount: "-18%",
+                image: "prod1.jpg"
+            },
+            {
+                id: 2,
+                title: "case iphone silver",
+                price: 1200,
+                oldPrice: 2200,
+                discount: "-55%",
+                image: "prod2.jpg"
+            },
+            {
+                id: 3,
+                title: "case iphone brown",
+                price: 1200,
+                oldPrice: 2200,
+                discount: "-55%",
+                image: "prod3.jpg"
+            },
+            {
+                id: 4,
+                title: "case iphone blue",
+                price: 1600,
+                oldPrice: 2500,
+                discount: "-26%",
+                image: "prod4.jpg"
+            }
+        ];
+
+        let selectedProduct = null;
+        let quantity = 1;
+        let deliveryType = 'home'; // 'home' أو 'desk'
+
+        // تعبئة الولايات والمنتجات عند تحميل الصفحة
+        window.onload = function() {
+            const wilayaSelect = document.getElementById('custWilaya');
+            wilayas.forEach((w) => {
+                const opt = document.createElement('option');
+                opt.value = w;
+                opt.textContent = w;
+                wilayaSelect.appendChild(opt);
+            });
+
+            const grid = document.getElementById('productsGrid');
+            products.forEach(p => {
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <span class="badge-discount">${p.discount}</span>
+                        <img src="${p.image}" class="product-image" alt="${p.title}">
+                        <div class="product-info">
+                            <h3 class="product-title">${p.title}</h3>
+                            <div class="price-box">
+                                <span class="current-price">${p.price} DA</span>
+                                <span class="old-price">${p.oldPrice} DA</span>
+                            </div>
+                            <button class="btn-order" onclick="openOrderModal(${p.id})">
+                                <i class="fa-solid fa-cart-shopping"></i> اطلب الآن
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        };
+
+        // فتح نافذة الطلب
+        function openOrderModal(id) {
+            selectedProduct = products.find(p => p.id === id);
+            quantity = 1;
+            document.getElementById('qtyVal').innerText = quantity;
+            document.getElementById('modalTitle').innerText = selectedProduct.title;
+            document.getElementById('modalPrice').innerText = selectedProduct.price + " DA";
+            document.getElementById('modalImg').src = selectedProduct.image;
+            
+            document.getElementById('checkoutFormContent').style.display = 'block';
+            document.getElementById('successContent').style.display = 'none';
+
+            calculateDelivery();
+            document.getElementById('orderModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').classList.remove('active');
+        }
+
+        // تعديل الكمية
+        function updateQty(change) {
+            if (quantity + change >= 1) {
+                quantity += change;
+                document.getElementById('qtyVal').innerText = quantity;
+                calculateDelivery();
+            }
+        }
+
+        // تحديد نوع التوصيل
+        function setDeliveryType(type) {
+            deliveryType = type;
+            if (type === 'home') {
+                document.getElementById('optHome').classList.add('selected');
+                document.getElementById('optDesk').classList.remove('selected');
+            } else {
+                document.getElementById('optDesk').classList.add('selected');
+                document.getElementById('optHome').classList.remove('selected');
+            }
+            calculateDelivery();
+        }
+
+        // حساب تكلفة التوصيل
+        function calculateDelivery() {
+            if (!selectedProduct) return;
+
+            const wilayaVal = document.getElementById('custWilaya').value;
+            let deliveryFee = 0;
+
+            if (wilayaVal !== "") {
+                const code = parseInt(wilayaVal.substring(0, 2));
+                
+                // ولايات الوسط العاصمي
+                if ([16, 9, 35, 42].includes(code)) {
+                    deliveryFee = (deliveryType === 'home') ? 400 : 300;
+                } 
+                // ولايات الجنوب
+                else if ([1, 8, 11, 30, 33, 37, 39, 47, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 65].includes(code)) {
+                    deliveryFee = (deliveryType === 'home') ? 950 : 650;
+                } 
+                // باقي الولايات والولايات الجديدة
+                else {
+                    deliveryFee = (deliveryType === 'home') ? 600 : 450;
+                }
+            }
+
+            const subtotal = selectedProduct.price * quantity;
+            const total = subtotal + deliveryFee;
+
+            document.getElementById('subtotalPrice').innerText = subtotal + " دج";
+            document.getElementById('deliveryCost').innerText = deliveryFee ? (deliveryFee + " دج") : "اختر الولاية";
+            document.getElementById('totalPrice').innerText = total + " دج";
+        }
+
+        // إرسال الطلب عبر Formspree
+        function submitOrder(e) {
+            e.preventDefault();
+
+            const submitBtn = document.querySelector('.btn-submit');
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري إرسال الطلب...';
+            submitBtn.disabled = true;
+
+            const orderData = {
+                "الاسم واللقب": document.getElementById('custName').value,
+                "رقم الهاتف": document.getElementById('custPhone').value,
+                "الولاية": document.getElementById('custWilaya').value,
+                "العنوان / البلدية": document.getElementById('custAddress').value,
+                "نوع التوصيل": deliveryType === 'home' ? 'توصيل للمنزل' : 'استلام من المكتب (Stop Desk)',
+                "المنتج": selectedProduct.title,
+                "الكمية": quantity,
+                "سعر المنتجات": document.getElementById('subtotalPrice').innerText,
+                "سعر التوصيل": document.getElementById('deliveryCost').innerText,
+                "المجموع الكلي": document.getElementById('totalPrice').innerText
+            };
+
+            fetch("https://formspree.io/f/mdeajlzn", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify(orderData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('checkoutFormContent').style.display = 'none';
+                    document.getElementById('successContent').style.display = 'block';
+                    document.getElementById('orderForm').reset();
+                } else {
+                    alert("حدث خطأ أثناء إرسال الطلب، يرجى المحاولة ثانية.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("تعذر الاتصال، يرجى التأكد من اتصال الإنترنت.");
+            })
+            .finally(() => {
+                submitBtn.innerHTML = '<i class="fa-solid fa-check-circle"></i> تأكيد الطلب الآن (الدفع عند الاستلام)';
+                submitBtn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
