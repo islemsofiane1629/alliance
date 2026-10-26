@@ -151,8 +151,8 @@
 
         .product-image {
             width: 100%;
-            height: 210px;
-            object-fit: cover;
+            height: 220px;
+            object-fit: contain;
             background: #f1f5f9;
         }
 
@@ -441,6 +441,32 @@
                             <button type="button" class="qty-btn" onclick="updateQty(1)">+</button>
                         </div>
                     </div>
+                    <!-- نوع الآيفون -->
+        <div class="form-group">
+          <label>نوع الآيفون *</label>
+          <select id="iphoneModel" class="form-control" required>
+            <option value="" disabled selected>-- اختر موديل الآيفون --</option>
+            <option value="iPhone 12 Pro Max">iPhone 12 Pro Max</option>
+            <option value="iPhone 13">iPhone 13</option>
+            <option value="iPhone 13 Pro">iPhone 13 pro</option>
+            <option value="iPhone 13 Pro Max">iPhone 13 Pro Max</option>
+            <option value="iPhone 14">iPhone 14</option>
+            <option value="iPhone 14 Pro">iPhone 14 Pro</option>
+            <option value="iPhone 14 Pro Max">iPhone 14 Pro Max</option>
+            <option value="iPhone 15">iPhone 15</option>
+            <option value="iPhone 15 Pro">iPhone 15 Pro</option>
+            <option value="iPhone 15 Pro Max">iPhone 15 Pro Max</option>
+            <option value="iPhone 16">iPhone 16</option>
+            <option value="iPhone 16 Pro">iPhone 16 pro</option>
+            <option value="iPhone 16 Pro Max">iPhone 16 Pro Max</option>
+            <option value="iPhone 17">iPhone 17</option>
+            <option value="iPhone 17 Pro">iPhone 17 pro</option>
+            <option value="iPhone 17 Pro Max">iPhone 17 Pro Max</option>
+            <option value="iPhone 18">iPhone 18</option>
+            <option value="iPhone 18 Pro">iPhone 18 pro</option>
+            <option value="iPhone 18 Pro Max">iPhone 18 pro max</option>
+          </select>
+        </div>
 
                     <!-- الاسم الكامل -->
                     <div class="form-group">
@@ -522,6 +548,122 @@
 
     <!-- سكربت العمليات والحسابات -->
     <script>
+      // جدول الأسعار من الصورة (TARIF للمنزل و TARIF STOP DESK للمكتب)
+const deliveryRates = {
+  1:  { home: 1100, desk: 600 },
+  2:  { home: 700,  desk: 400 },
+  3:  { home: 900,  desk: 500 },
+  4:  { home: 800,  desk: 400 },
+  5:  { home: 800,  desk: 400 },
+  6:  { home: 700,  desk: 400 },
+  7:  { home: 900,  desk: 500 },
+  8:  { home: 1100, desk: 600 },
+  9:  { home: 500,  desk: 250 },
+  10: { home: 650,  desk: 400 },
+  11: { home: 1300, desk: 800 },
+  12: { home: 800,  desk: 500 },
+  13: { home: 800,  desk: 400 },
+  14: { home: 800,  desk: 400 },
+  15: { home: 650,  desk: 400 },
+  16: { home: 400,  desk: 200 },
+  17: { home: 900,  desk: 500 },
+  18: { home: 700,  desk: 400 },
+  19: { home: 700,  desk: 400 },
+  20: { home: 800,  desk: 400 },
+  21: { home: 700,  desk: 400 },
+  22: { home: 700,  desk: 400 },
+  23: { home: 700,  desk: 400 },
+  24: { home: 800,  desk: 400 },
+  25: { home: 700,  desk: 400 },
+  26: { home: 600,  desk: 400 },
+  27: { home: 700,  desk: 400 },
+  28: { home: 800,  desk: 500 },
+  29: { home: 700,  desk: 400 },
+  30: { home: 1000, desk: 500 },
+  31: { home: 700,  desk: 400 },
+  32: { home: 1000, desk: 500 },
+  33: { home: 1300, desk: 600 },
+  34: { home: 700,  desk: 400 },
+  35: { home: 600,  desk: 350 },
+  36: { home: 800,  desk: 400 },
+  37: { home: 1300, desk: 600 },
+  38: { home: 800,  desk: 400 },
+  39: { home: 900,  desk: 500 },
+  40: { home: 800,  desk: 500 },
+  41: { home: 800,  desk: 500 },
+  42: { home: 600,  desk: 350 },
+  43: { home: 700,  desk: 400 },
+  44: { home: 600,  desk: 400 },
+  45: { home: 1000, desk: 500 },
+  46: { home: 700,  desk: 500 },
+  47: { home: 1000, desk: 500 },
+  48: { home: 700,  desk: 400 },
+  49: { home: 1300, desk: 600 },
+  51: { home: 900,  desk: 500 },
+  52: { home: 1300, desk: 0 },
+  53: { home: 1300, desk: 600 },
+  55: { home: 900,  desk: 0 },
+  57: { home: 900,  desk: 0 },
+  58: { home: 1000, desk: 500 }
+};
+
+// متغير نوع التوصيل المختار (افتراضياً: للمنزل)
+let currentDeliveryType = 'home';
+
+// دالة تغيير التحديد بين زر "للمنزل" و "لمكتب التوصيل"
+function setDeliveryType(type) {
+  currentDeliveryType = type;
+  
+  const optHome = document.getElementById('optHome');
+  const optDesk = document.getElementById('optDesk');
+  
+  if (type === 'home') {
+    optHome.classList.add('selected');
+    optDesk.classList.remove('selected');
+  } else {
+    optDesk.classList.add('selected');
+    optHome.classList.remove('selected');
+  }
+  
+  // إعادة حساب السعر بعد التغيير
+  calculateDelivery();
+}
+
+// دالة حساب وتحديث سعر التوصيل حسب الولاية والنوع
+function calculateDelivery() {
+  const wilayaSelect = document.getElementById('custWilaya');
+  if (!wilayaSelect) return;
+
+  const wilayaCode = parseInt(wilayaSelect.value);
+
+  if (!wilayaCode || !deliveryRates[wilayaCode]) {
+    return;
+  }
+
+  const rate = deliveryRates[wilayaCode];
+  let deliveryCost = (currentDeliveryType === 'desk') ? rate.desk : rate.home;
+
+  // تحديث خانة عرض السعر في قسم تفاصيل السعر
+  const deliverySpan = document.querySelector('#deliveryPrice, .delivery-price, #deliveryCostText');
+  if (deliverySpan) {
+    deliverySpan.textContent = deliveryCost + ' دج';
+  }
+
+  // تحديث سعر التوصيل والمجموع الكلي
+  const deliveryEl = document.querySelector('.delivery-price, #deliveryCostText, #deliveryPrice');
+  if (deliveryEl) deliveryEl.textContent = deliveryCost + ' دج';
+
+  // جلب سعر المنتج وحساب المجموع الكلي (المنتج + التوصيل)
+  const productPriceEl = document.querySelector('.product-price, #productPrice, #modalProductPrice');
+  const totalPriceEl = document.querySelector('.total-price, #totalPrice, #finalTotal');
+
+  if (productPriceEl && totalPriceEl) {
+    const basePrice = parseFloat(productPriceEl.textContent.replace(/[^0-9]/g, '')) || 0;
+    const qty = parseInt(document.getElementById('qtyVal')?.textContent) || 1;
+    const finalTotal = (basePrice * qty) + Number(deliveryCost);
+    totalPriceEl.textContent = finalTotal + ' دج';
+  }
+}
         // قائمة الولايات كاملة (69 ولاية)
         const wilayas = [
             "01 - أدرار", "02 - الشلف", "03 - الأغواط", "04 - أم البواقي", "05 - باتنة",
@@ -641,49 +783,46 @@
         }
 
         // تحديد نوع التوصيل
-        function setDeliveryType(type) {
-            deliveryType = type;
-            if (type === 'home') {
-                document.getElementById('optHome').classList.add('selected');
-                document.getElementById('optDesk').classList.remove('selected');
-            } else {
-                document.getElementById('optDesk').classList.add('selected');
-                document.getElementById('optHome').classList.remove('selected');
-            }
-            calculateDelivery();
-        }
+function setDeliveryType(type) {
+  deliveryType = type;
+  currentDeliveryType = type;
 
-        // حساب تكلفة التوصيل
-        function calculateDelivery() {
-            if (!selectedProduct) return;
+  const optHome = document.getElementById('optHome');
+  const optDesk = document.getElementById('optDesk');
 
-            const wilayaVal = document.getElementById('custWilaya').value;
-            let deliveryFee = 0;
+  if (type === 'home') {
+    optHome?.classList.add('selected');
+    optDesk?.classList.remove('selected');
+  } else {
+    optDesk?.classList.add('selected');
+    optHome?.classList.remove('selected');
+  }
 
-            if (wilayaVal !== "") {
-                const code = parseInt(wilayaVal.substring(0, 2));
-                
-                // ولايات الوسط العاصمي
-                if ([16, 9, 35, 42].includes(code)) {
-                    deliveryFee = (deliveryType === 'home') ? 400 : 300;
-                } 
-                // ولايات الجنوب
-                else if ([1, 8, 11, 30, 33, 37, 39, 47, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 65].includes(code)) {
-                    deliveryFee = (deliveryType === 'home') ? 950 : 650;
-                } 
-                // باقي الولايات والولايات الجديدة
-                else {
-                    deliveryFee = (deliveryType === 'home') ? 600 : 450;
-                }
-            }
+  calculateDelivery();
+}
 
-            const subtotal = selectedProduct.price * quantity;
-            const total = subtotal + deliveryFee;
+// حساب تكلفة التوصيل والمجموع الكلي
+function calculateDelivery() {
+  if (!selectedProduct) return;
 
-            document.getElementById('subtotalPrice').innerText = subtotal + " دج";
-            document.getElementById('deliveryCost').innerText = deliveryFee ? (deliveryFee + " دج") : "اختر الولاية";
-            document.getElementById('totalPrice').innerText = total + " دج";
-        }
+  const wilayaVal = document.getElementById('custWilaya')?.value || "";
+  if (wilayaVal === "") return;
+
+  const wilayaCode = parseInt(wilayaVal.substring(0, 2));
+  if (!wilayaCode || !deliveryRates[wilayaCode]) return;
+
+  const isDesk = (typeof currentDeliveryType !== 'undefined' ? currentDeliveryType : deliveryType) === 'desk';
+  const deliveryFee = isDesk ? deliveryRates[wilayaCode].desk : deliveryRates[wilayaCode].home;
+
+  const subtotal = selectedProduct.price * quantity;
+  const total = subtotal + deliveryFee;
+
+  document.getElementById('subtotalPrice').innerText = subtotal + " دج";
+  document.getElementById('deliveryCost').innerText = deliveryFee + " دج";
+  document.getElementById('totalPrice').innerText = total + " دج";
+}
+
+        
 
         // إرسال الطلب عبر Formspree
         function submitOrder(e) {
